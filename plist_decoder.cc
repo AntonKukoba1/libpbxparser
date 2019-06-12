@@ -38,10 +38,29 @@ void pbx::PlistDecoder::_ignore_comment()
 	
 	_index += 2;
 	
-	while (_str[_index] != '*' && _str[_index + 1] != '/')
-		_index++;
-	
-	_index += 2;
+    uint64_t starIndex = 0;
+    while (_index < _str.length())
+    {
+        if (_str[_index] == '*')
+        {
+            starIndex = _index;
+            _index++;
+            continue;
+        }
+
+        if (_str[_index] == '/')
+        {
+            if (starIndex == _index - 1)
+            {
+                _index++;
+                return;
+            }
+
+            starIndex = 0;
+        }
+        
+        _index++;
+    }
 }
 
 void pbx::PlistDecoder::_ignore_whitespaces()
